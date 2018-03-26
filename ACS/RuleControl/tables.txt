@@ -1,0 +1,29 @@
+    QVector <QString> vecTermWords; //1
+    QVector <QString> vecOperators; //2
+    QVector <qreal> *vecConst; //3
+    QVector <structParam> *vecParam; //4
+    QVector <QString> *names; //5
+    QString breaks; //6
+
+
+        vecTermWords.push_back("error"); //заглушка
+        vecTermWords.push_back("rule"); //правило
+        vecTermWords.push_back("mode"); //режим
+        vecTermWords.push_back("cond"); //выход на режим
+        vecTermWords.push_back("if");
+
+        vecOperators.push_back("error");//заглушка
+        vecOperators.push_back(">");
+        vecOperators.push_back("<");
+        vecOperators.push_back("=");
+        vecOperators.push_back("=>");
+        vecOperators.push_back("<=");
+        vecOperators.push_back("<>");
+        vecOperators.push_back("&"); //И
+        vecOperators.push_back("|"); //или
+        vecOperators.push_back(":"); //не фигурирует в векторе лексем, необходим для
+                                    //разделения имени девайса и параметра
+
+        breaks="{}()";
+
+        termComment='/';

@@ -1,0 +1,661 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1078</width>
+    <height>763</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>AKS</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QPushButton" name="pushButton_5">
+        <property name="minimumSize">
+         <size>
+          <width>121</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Подтвердить ввод</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label">
+        <property name="minimumSize">
+         <size>
+          <width>131</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Введите серийный номер:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="lineEdit">
+        <property name="minimumSize">
+         <size>
+          <width>291</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QPushButton" name="pushButton_4">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Закрыть проект</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="minimumSize">
+         <size>
+          <width>41</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Ошибка</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_6">
+        <property name="minimumSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Rect</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Чтение устройств</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_7">
+        <property name="minimumSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Rect</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Запись/чтение БД</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_8">
+        <property name="minimumSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Rect</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Общий прогресс тестирования:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QProgressBar" name="progressBar">
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QTreeView" name="treeView">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="minimumSize">
+         <size>
+          <width>451</width>
+          <height>281</height>
+         </size>
+        </property>
+        <property name="tabPosition">
+         <enum>QTabWidget::South</enum>
+        </property>
+        <property name="currentIndex">
+         <number>3</number>
+        </property>
+        <widget class="QWidget" name="tab">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <attribute name="title">
+          <string>График</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QCustomPlot" name="customPlot" native="true">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>100</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_2">
+         <attribute name="title">
+          <string>Настройка устройств</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_5"/>
+        </widget>
+        <widget class="QWidget" name="tab_4">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <attribute name="title">
+          <string>Правила</string>
+         </attribute>
+         <widget class="QPlainTextEdit" name="plainTextEdit">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>431</width>
+            <height>421</height>
+           </rect>
+          </property>
+          <property name="lineWrapMode">
+           <enum>QPlainTextEdit::NoWrap</enum>
+          </property>
+          <property name="plainText">
+           <string>rule paramMode /название правила
+{
+ mode(1) &amp; cond(1) /функции предпроверки условий выполнения правил
+ {
+	
+	if (01:ru.00&gt;10); /типа проверяем какой то параметр, если условие true -&gt; execption
+	if (01:ru.01&lt;0.1); /типа проверяем какой то параметр, если условие true -&gt; execption
+	if (01:ru.01&gt;1 &amp; 01:ru.01&lt;10);
+
+	if (01:ru.01&gt;1 &amp; 01:ru.01&lt;10)	
+		GetSred(01:ru.01:time,1000,01:ru.01,&gt;,100);
+
+
+	if (01:ru.01&gt;1 &amp; 01:ru.01&lt;10)
+	{	
+		GetSred(01:ru.01:time,1000,01:ru.01,&gt;,100);
+		GetSred(01:ru.02:time,1000,02:ru.01,&gt;,100);
+	}
+
+		postGetSred(01:ru.01,1,100);
+ }
+}</string>
+          </property>
+         </widget>
+         <widget class="QPlainTextEdit" name="plainTextEdit_2">
+          <property name="geometry">
+           <rect>
+            <x>450</x>
+            <y>10</y>
+            <width>321</width>
+            <height>421</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_6">
+          <property name="geometry">
+           <rect>
+            <x>170</x>
+            <y>440</y>
+            <width>75</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Parse</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="tab_3">
+         <attribute name="title">
+          <string>Замкнутое тестирование</string>
+         </attribute>
+         <widget class="QPushButton" name="pushButton">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>191</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Сгенерировать рандом в очереди</string>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="lineEdit_2">
+          <property name="geometry">
+           <rect>
+            <x>210</x>
+            <y>10</y>
+            <width>171</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>1000</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_2">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>50</y>
+            <width>121</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Занять очередь 1</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_3">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>80</y>
+            <width>121</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Занять очередь 2</string>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="checkBox">
+          <property name="geometry">
+           <rect>
+            <x>140</x>
+            <y>50</y>
+            <width>21</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="checkBox_2">
+          <property name="geometry">
+           <rect>
+            <x>140</x>
+            <y>80</y>
+            <width>21</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QGroupBox" name="groupBox">
+          <property name="geometry">
+           <rect>
+            <x>420</x>
+            <y>10</y>
+            <width>211</width>
+            <height>131</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Состояние БД</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <item>
+            <widget class="QListWidget" name="listWidget">
+             <item>
+              <property name="text">
+               <string>Запись в очередь БД</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Чтение очереди БД</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Есть запрос на выборку</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Запись в выходную очередь</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Чтение выходной очереди</string>
+              </property>
+              <property name="checkState">
+               <enum>Unchecked</enum>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QCheckBox" name="checkBox_3">
+          <property name="geometry">
+           <rect>
+            <x>200</x>
+            <y>50</y>
+            <width>131</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Очередь БД не пуста</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_7">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>110</y>
+            <width>121</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>I/O поток БД</string>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="checkBox_4">
+          <property name="geometry">
+           <rect>
+            <x>140</x>
+            <y>110</y>
+            <width>21</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_8">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>140</y>
+            <width>121</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Получить ошибку БД</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_9">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>200</y>
+            <width>121</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Запустить тест</string>
+          </property>
+         </widget>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1078</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Файл</string>
+    </property>
+    <addaction name="action_2"/>
+    <addaction name="action"/>
+    <addaction name="action_3"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>Поиск</string>
+    </property>
+    <addaction name="action_4"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>Управление</string>
+    </property>
+    <addaction name="action_6"/>
+   </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>Тестирование</string>
+    </property>
+    <addaction name="action_7"/>
+    <addaction name="action_8"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
+   <addaction name="menu_4"/>
+  </widget>
+  <action name="action">
+   <property name="text">
+    <string>Открыть проект</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="text">
+    <string>Создать проект</string>
+   </property>
+  </action>
+  <action name="action_3">
+   <property name="text">
+    <string>Выход</string>
+   </property>
+  </action>
+  <action name="action_4">
+   <property name="text">
+    <string>Поиск по серийному номеру</string>
+   </property>
+  </action>
+  <action name="action_start_test">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Старт</string>
+   </property>
+  </action>
+  <action name="action_6">
+   <property name="text">
+    <string>Создать новую сессию</string>
+   </property>
+  </action>
+  <action name="action_7">
+   <property name="text">
+    <string>Старт</string>
+   </property>
+  </action>
+  <action name="action_8">
+   <property name="text">
+    <string>Стоп</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>DataPlot/qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS 'Session_prj' (
+'id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+'dt' TEXT NOT NULL,
+'id_data_result' INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS 'Config' (
+'id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+'id_session' INTEGER,
+'num_dev' TEXT,
+'param_number' INTEGER, //имя параметра
+'coefficient' TEXT,  //коэффициент
+'unit' TEXT, //единица изм
+'param_name' TEXT 
+); //имя параметра
+
+CREATE TABLE IF NOT EXISTS 'data' (
+'id' INTEGER NOT NULL, 
+'dt' INTEGER, 
+'data' INTEGER 
+);
