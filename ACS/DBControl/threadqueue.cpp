@@ -176,6 +176,7 @@ void ThreadQueue::run()
          {
              TimerSkip=true;
              Suspend=true;
+             sdb->commit(); //пофиг - коммитим
              continue;
          }
 

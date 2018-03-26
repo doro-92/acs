@@ -36,14 +36,20 @@ public:
     void CloseDB();
 
     //создание новой сессии
-    bool CreateSession();
+    bool CreateSession(QString serialNumber);
+
+    // ????????????????????????????????????????????
+    //добавляет правило
+    bool AddRule(QString code);
+
+    //добавляет режим и переключает AddConfig на него
+    bool AddMode(QString numMode);
 
     //добавление конфига из каждого устройства
     bool AddConfig(QString uniq_num_dev, QVector <ConfigStruct> *Config);
 
     //формирование нового конфига из всех новых импортнутых через AddConfig()
     bool FlushNewConfig();
-
 
     //управлением потоком записи и чтения DataFlow
     void ControlThreadParse(bool StartOrStop);
@@ -68,9 +74,10 @@ public slots:
 
     QString Err;
     ThreadQueue *thq;
-    QSqlDatabase *sdb_k;
+    QSqlDatabase *sdb;
     QString _lasterr;
     QString currentID;
+    QString currentMode;
 
 
 

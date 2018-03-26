@@ -2,8 +2,8 @@
 
 DBControl::DBControl(QQueue <structDataFlow> *DataFlowToDB, QQueue<structNewDataFlow> *DataFlowFromDB,  DBSemaphores *sDBSem)
 {
-    sdb_k = new QSqlDatabase();
-    *sdb_k = QSqlDatabase::addDatabase("QSQLITE");
+    sdb = new QSqlDatabase();
+    *sdb = QSqlDatabase::addDatabase("QSQLITE");
 
     //регистрируем свой тип данных
     qRegisterMetaType<structDBErrors>();
@@ -14,7 +14,7 @@ DBControl::DBControl(QQueue <structDataFlow> *DataFlowToDB, QQueue<structNewData
     //создадим обьект класса QThread
     parser_th=new QThread();
     //создадим обьект своего класса
-    thq=new ThreadQueue(sdb_k,DataFlowToDB, DataFlowFromDB,sDBSem);
+    thq=new ThreadQueue(sdb,DataFlowToDB, DataFlowFromDB,sDBSem);
     //переместим свой обьект в созданный поток
     thq->moveToThread(parser_th);
     //соединим нашу функцию ThreadQueue::run с сигналом QThread::started
@@ -39,9 +39,9 @@ DBControl::~DBControl()
     delete [] thq;
 
 
-    sdb_k->close();
-    sdb_k->~QSqlDatabase();
-    delete [] sdb_k;
+    sdb->close();
+    sdb->~QSqlDatabase();
+    delete [] sdb;
 }
 
 void DBControl::ClearErrors()
@@ -71,13 +71,13 @@ bool DBControl::CreateDB(QString db_path, bool rewrite)
     }
 
     // создаем бд
-    sdb_k->setDatabaseName(db_path);
+    sdb->setDatabaseName(db_path);
 
-    if (!sdb_k->open())
+    if (!sdb->open())
     {
         DBErrors.Create=true;
         DBErrors.Open=true;
-        _lasterr = sdb_k->lastError().text();
+        _lasterr = sdb->lastError().text();
         return false;
      }
     //создаем таблицы
@@ -96,12 +96,12 @@ bool DBControl::OpenDB(QString db_path)
     }
 
     // создаем бд
-    sdb_k->setDatabaseName(db_path);
+    sdb->setDatabaseName(db_path);
 
-    if (!sdb_k->open())
+    if (!sdb->open())
     {
         DBErrors.Open=true;
-        _lasterr = sdb_k->lastError().text();
+        _lasterr = sdb->lastError().text();
         return false;
     }
     return true;
@@ -111,32 +111,59 @@ void DBControl::CloseDB()
 {
     thq->SuspendThread(true);
     while(!thq->GetSuspendStatus()) {};
-    sdb_k->close();
+    sdb->close();
 }
 
 bool DBControl::CreateTables()
 {
-    QSqlQuery query(*sdb_k);
+    QSqlQuery query(*sdb);
 
     QString str = "CREATE TABLE IF NOT EXISTS 'Session' ("
                   "'id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
                   "'dt' TEXT NOT NULL,"
-                  "'id_data_result' INTEGER);";
+                  "'serial' TEXT NOT NULL,"
+                  "'testOk' INTEGER);";
                   /*to do*/
 
     if (!query.exec(str))
     {
         DBErrors.WriteToDB=true;
         DBErrors.CreateTable=true;
-        _lasterr = "Не удается создать таблицу сессии: "+sdb_k->lastError().text();
+        _lasterr = "Не удается создать таблицу сессии: "+sdb->lastError().text();
+        return false;
+    }
+
+    str = "CREATE TABLE IF NOT EXISTS 'Rule' ("
+                  "'id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+                  "'id_session' INTEGER NOT NULL,"
+                  "'code' TEXT);";
+
+    if (!query.exec(str))
+    {
+        DBErrors.WriteToDB=true;
+        DBErrors.CreateTable=true;
+        _lasterr = "Не удается создать таблицу правил: "+sdb->lastError().text();
+        return false;
+    }
+
+    str = "CREATE TABLE IF NOT EXISTS 'Mode' ("
+                  "'id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+                  "'id_session' INTEGER NOT NULL,"
+                  "'num_mode' INTEGER NOT NULL);";
+
+    if (!query.exec(str))
+    {
+        DBErrors.WriteToDB=true;
+        DBErrors.CreateTable=true;
+        _lasterr = "Не удается создать таблицу режимов: "+sdb->lastError().text();
         return false;
     }
 
     str = "CREATE TABLE IF NOT EXISTS 'Config' ("
             "'id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
-            "'id_session' INTEGER,"
+            "'id_mode' INTEGER,"
             "'num_dev' TEXT,"
-            "'param_number' INTEGER," //имя параметра
+            "'param_number' INTEGER," //номер параметра
             "'coefficient' TEXT, " //коэффициент
             "'unit' TEXT," //единица изм
             "'param_name' TEXT );"; //имя параметра
@@ -146,12 +173,12 @@ bool DBControl::CreateTables()
     {
         DBErrors.WriteToDB=true;
         DBErrors.CreateTable=true;
-        _lasterr = "Не удается создать таблицу конфигурации: "+sdb_k->lastError().text();
+        _lasterr = "Не удается создать таблицу конфигурации: "+sdb->lastError().text();
         return false;
     }
 
-    str = "CREATE TABLE IF NOT EXISTS 'data' ("
-            "'id' INTEGER NOT NULL, "
+    str = "CREATE TABLE IF NOT EXISTS 'Data' ("
+            "'id_config' INTEGER NOT NULL, "
             "'dt' INTEGER, "
             "'data' TEXT );";
 
@@ -160,7 +187,7 @@ bool DBControl::CreateTables()
     {
         DBErrors.WriteToDB=true;
         DBErrors.CreateTable=true;
-        _lasterr = "Не удается создать таблицу данных: "+sdb_k->lastError().text();
+        _lasterr = "Не удается создать таблицу данных: "+sdb->lastError().text();
         return false;
     }
 
@@ -168,15 +195,16 @@ bool DBControl::CreateTables()
 }
 
 
-bool DBControl::CreateSession()
+bool DBControl::CreateSession(QString serialNumber)
 {
-    QSqlQuery query(*sdb_k);
+    QSqlQuery query(*sdb);
 
-    if (!query.exec("insert into Session(dt, id_data_result) values(datetime('now','localtime'),0);"))
+    if (!query.exec("insert into Session(dt,serial, testOk) "
+                    "values(datetime('now','localtime'),"+serialNumber+",0);"))
     {
         DBErrors.WriteToDB=true;
         _lasterr="Невозможно записать в таблицу сессии! Подробности:"
-                +sdb_k->lastError().text();
+                +sdb->lastError().text();
         return false;
     }
 
@@ -185,13 +213,62 @@ bool DBControl::CreateSession()
     {
         DBErrors.ReadFromDB=true;
         _lasterr="Невозможно прочитать таблицу сессии! Подробности:"
-                +sdb_k->lastError().text();
+                +sdb->lastError().text();
         return false;
     }
 
     QSqlRecord rec     = query.record();
     query.first();
+
+    if (query.value(rec.indexOf("id_m")).toInt()==0)
+    {
+        DBErrors.ReadFromDB =true;
+        _lasterr="Не найден номер сессии в БД! Подробности:"
+                +sdb->lastError().text();
+        return false;
+    }
+
     currentID=query.value(rec.indexOf("id_m")).toString();
+
+    return true;
+}
+
+
+bool DBControl::AddMode(QString numMode)
+{
+    QSqlQuery query(*sdb);
+
+    QString str="INSERT INTO Mode(id_session,num_mode) "
+            "VALUES("+currentID+","+numMode+")";
+
+    if (!query.exec(str))
+    {
+        DBErrors.WriteToDB=true;
+        _lasterr ="Невозможно добавить данные в таблицу режима: "+sdb->lastError().text();
+        return false;
+    }
+
+    if (!query.exec("SELECT MAX(id) as 'id_m' FROM Mode;"))
+    {
+        DBErrors.ReadFromDB=true;
+        _lasterr="Невозможно прочитать таблицу режима! Подробности:"
+                +sdb->lastError().text();
+        return false;
+    }
+
+    QSqlRecord rec     = query.record();
+    query.first();
+
+    if (query.value(rec.indexOf("id_m")).toInt()==0)
+    {
+        DBErrors.ReadFromDB =true;
+        _lasterr="Не найден номер режима в БД! Подробности:"
+                +sdb->lastError().text();
+        return false;
+    }
+
+    currentMode=query.value(rec.indexOf("id_m")).toString();
+
 
     return true;
 }
@@ -199,22 +276,31 @@ bool DBControl::CreateSession()
 bool DBControl::AddConfig(QString uniq_num_dev, QVector <ConfigStruct> *Config)
 {
     //QString num_dev=QString::number(uniq_num_dev);
-     QSqlQuery query(*sdb_k);
+     QSqlQuery query(*sdb);
      QString str;
 
     //включаем кэширование
-    if (!sdb_k->transaction())
+    if (!sdb->transaction())
     {
         DBErrors.Commit=true;
-        _lasterr ="Невозможно включить макротранзакцию: "+sdb_k->lastError().text();
+        _lasterr ="Невозможно включить макротранзакцию: "+sdb->lastError().text();
         return false;
     }
 
+/*
+            "'id' INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+            "'id_mode' INTEGER,"
+            "'num_dev' TEXT,"
+            "'param_number' INTEGER," //номер параметра
+            "'coefficient' TEXT, " //коэффициент
+            "'unit' TEXT," //единица изм
+            "'param_name' TEXT );"; //имя параметра
+*/
 
     for (int i=0;i<Config->size();i++)
     {
-        str="INSERT INTO config(id_session,num_dev,param_number,coefficient,unit,param_name)"
-             " VALUES('"+currentID+"','"+
+        str="INSERT INTO Config(id_mode,num_dev,param_number,coefficient,unit,param_name)"
+             " VALUES('"+currentMode+"','"+
              uniq_num_dev+"', '"+QString::number(Config->operator [](i).param_number)
              +"','"+Config->operator [](i).coefficient+"','"+
              Config->operator [](i).unit+"','"+Config->operator [](i).param_name+"');";
@@ -223,17 +309,17 @@ bool DBControl::AddConfig(QString uniq_num_dev, QVector <ConfigStruct> *Config)
         if (!query.exec(str))
         {
             DBErrors.WriteToDB=true;
-            _lasterr ="Невозможно добавить данные в таблицу конфигурации: "+sdb_k->lastError().text();
+            _lasterr ="Невозможно добавить данные в таблицу конфигурации: "+sdb->lastError().text();
             return false;
         }
 
     }
 
    //заполняем конфигурацию
-    if (!sdb_k->commit())
+    if (!sdb->commit())
     {
         DBErrors.Commit=true;
-         _lasterr ="Ошибка фиксации транзакций: "+sdb_k->lastError().text();
+         _lasterr ="Ошибка фиксации транзакций: "+sdb->lastError().text();
         return false;
     }
 
@@ -278,19 +364,19 @@ bool DBControl::GetStatusSuspendParse()
 
 bool DBControl::GetStatusOpenDB()
 {
-    return sdb_k->isOpen();
+    return sdb->isOpen();
 }
 
 QString DBControl::GetLastErrorTH()
 {
    ClearErrors();
-   return /*thq->Err+*/sdb_k->lastError().text();
+   return /*thq->Err+*/sdb->lastError().text();
 }
 
 QString DBControl::GetLastError()
 {
     ClearErrors();
-    return _lasterr+sdb_k->lastError().text();
+    return _lasterr+sdb->lastError().text();
 }
 
 void DBControl::GetParameters(qint32 &id, QString &time)
