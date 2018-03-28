@@ -28,8 +28,8 @@ public:
     bool FlushNewConfig(QString &currentID);
 
 
-    qint32 GetCurrentIdFromNumParam(const QString &numDevice, const qint16 &numParam);
-    bool GetCurrentNumParamFromId(const quint32 id, QString &numDevice, quint32 &numParam);
+    qint32 GetCurrentIdFromNumParam(const quint32 &numDevice, const qint16 &numParam);
+    bool GetCurrentNumParamFromId(const quint32 id, quint32 &numDevice, quint32 &numParam);
 
 signals:
     void SendError(structDBErrors stDBErr);

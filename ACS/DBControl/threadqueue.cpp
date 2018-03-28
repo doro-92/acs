@@ -206,7 +206,7 @@ void ThreadQueue::run()
          sDBSem->QueueRd=false;
 
          //получаем id
-         qint32 currId = GetCurrentIdFromNumParam(QString::number(structIn.numDevice),structIn.numParam);
+         qint32 currId = GetCurrentIdFromNumParam(structIn.numDevice,structIn.numParam);
 
 //         if (currId==-1)
 //         {
@@ -281,7 +281,7 @@ bool ThreadQueue::FlushNewConfig(QString &currentID)
         structCurrentDataConfig structDC;
             //сформируем пару и запихнем в структуру
         structDC.ID = query.value(rec.indexOf("id")).toUInt();
-        structDC.numDevice=query.value(rec.indexOf("num_dev")).toString();
+        structDC.numDevice=query.value(rec.indexOf("num_dev")).toInt();
         structDC.param_number=query.value(rec.indexOf("param_number")).toInt();
         structDC.param_name=query.value(rec.indexOf("param_name")).toInt();
         structDC.unit=query.value(rec.indexOf("unit")).toString();
@@ -294,7 +294,7 @@ bool ThreadQueue::FlushNewConfig(QString &currentID)
     return true;
 }
 
-qint32 ThreadQueue::GetCurrentIdFromNumParam(const QString &numDevice, const qint16 &numParam)
+qint32 ThreadQueue::GetCurrentIdFromNumParam(const quint32 &numDevice, const qint16 &numParam)
 {
    for (qint32 i=0;i<CurrentSessionConfig->size();i++)
        if (CurrentSessionConfig->operator [](i).numDevice==numDevice &&
@@ -303,7 +303,7 @@ qint32 ThreadQueue::GetCurrentIdFromNumParam(const QString &numDevice, const qin
    return -1;
 }
 
-bool ThreadQueue::GetCurrentNumParamFromId(const quint32 id, QString &numDevice, quint32 &numParam)
+bool ThreadQueue::GetCurrentNumParamFromId(const quint32 id, quint32 &numDevice, quint32 &numParam)
 {
    for (qint32 i=0;i<CurrentSessionConfig->size();i++)
        if (CurrentSessionConfig->operator [](i).ID==id)

@@ -48,24 +48,30 @@ typedef struct structDataConfig
 }structDataConfig;
 */
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+////////////////////!!! coefficient возможно надо double? /////////////
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!
 typedef struct ConfigStruct //структура "Конфигурация", описывающая параметры, поступающие от устройства
 {
-qint16 param_number; //номер параметра,
-QString coefficient; //коэффициент на который нужно домножать,
-QString unit; //единица измерения,
-QString param_name; //название параметра (например "ru.00 - состояние инвертора" )
-qint32 param_adress; //адрес параметров ПЧ
+    qint16 param_number; //номер параметра,
+    QString coefficient; //коэффициент на который нужно домножать,
+    QString unit; //единица измерения,
+    QString param_name; //название параметра (например "ru.00 - состояние инвертора" )
+    qint32 param_adress; //адрес параметров ПЧ
+    bool type; //тип данных, 0 - int, 1- double
 }ConfigStruct;
 
 
 typedef struct structCurrentDataConfig
 {
     quint32 ID; //id парметра
-    QString numDevice; //номер уст-ва
+    quint32 numDevice; //номер уст-ва
     qint16 param_number; //номер параметра
     QString param_name; //название параметра (например "ru.00 - состояние инвертора" )
     QString unit; //единица измерения,
     QString coefficient;//коэффициент на который нужно домножать,
+    bool type; //тип данных, 0 - int, 1- double
 }structCurrentDataConfig;
 
 typedef struct structNewDataFlow
@@ -75,4 +81,10 @@ typedef struct structNewDataFlow
     QString data;
 }structNewDataFlow;
 
+typedef struct structSelectFromDB
+{
+    bool ok; //заглушка, если не надо ничего =false
+    quint32 id; //ид из CurrentConfig на параметр
+    QString time;// время, если 0 то весь кусок, или от времени нужного
+}structSelectFromDB;
 #endif // EXT_H

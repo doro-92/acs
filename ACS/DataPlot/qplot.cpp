@@ -18,12 +18,13 @@ QPlot::~QPlot()
 
 void QPlot::InitPlot(QWidget *parent)
 {
-    //if (parent->layout()==NULL)
-    //QVBoxLayout *verticalLayout = new QVBoxLayout(this);
-    //else
-    //bicycle iept, robit
-    QLayout *verticalLayout=parent->layout();
+    QVBoxLayout *verticalLayout = new QVBoxLayout(parent);
 
+    //else
+    //bicycle iept, robit. MOC глючил
+    //QLayout *verticalLayout=parent->layout();
+
+    verticalLayout->setObjectName("PlotLayout");
     verticalLayout->setSpacing(0);
     verticalLayout->setContentsMargins(11, 11, 11, 11);
     verticalLayout->setContentsMargins(0, 0, 0, 0);
