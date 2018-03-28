@@ -195,12 +195,12 @@ bool DBControl::CreateTables()
 }
 
 
-bool DBControl::CreateSession(QString serialNumber)
+bool DBControl::CreateSession()
 {
     QSqlQuery query(*sdb);
 
     if (!query.exec("insert into Session(dt,serial, testOk) "
-                    "values(datetime('now','localtime'),"+serialNumber+",0);"))
+                    "values(datetime('now','localtime'),"+SerialNumber+",0);"))
     {
         DBErrors.WriteToDB=true;
         _lasterr="Невозможно записать в таблицу сессии! Подробности:"

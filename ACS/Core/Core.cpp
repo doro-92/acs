@@ -1,7 +1,8 @@
 #include "Core.h"
 
-Core::Core(const quint32 &numDFqueue, QWidget *pwgt, QPlainTextEdit *plainTextEdit)
+Core::Core(const quint32 &numDFqueue, QWidget *ProgWgt, QWidget *PlotWgt, QPlainTextEdit *plainTextEdit)
 {
+    //init core systems
     this->numDFqueue=numDFqueue;
     for (quint32 i=0;i<numDFqueue;i++)
         vecDataFlow.push_back(new QQueue <structDataFlow>);
@@ -14,11 +15,6 @@ Core::Core(const quint32 &numDFqueue, QWidget *pwgt, QPlainTextEdit *plainTextEd
 
     sDBSem = new DBSemaphores();
 
-    ///////////////////////////////////////////////////////////////////////
-    objPLCF5A = new device_PLC_F5A(pwgt,vecDataFlow[0],&vecFlgQueueWr[0]);
-
-    objDBC = new DBControl(DataFlowToDB,DataFlowFromDB,sDBSem);
-
     objTH = new QThread();
     objThTranslate = new cthTranslate(&vecDataFlow,DataFlowToDB,&vecFlgQueueWr,sDBSem);
     objThTranslate->moveToThread(objTH);
@@ -26,7 +22,21 @@ Core::Core(const quint32 &numDFqueue, QWidget *pwgt, QPlainTextEdit *plainTextEd
     connect(objTH, SIGNAL(started()), objThTranslate, SLOT(run()));
     objTH->start();
 
+    ///////////////////////////////////////////////////////////////////////
+
+    //инициализация девайса/ов
+    objPLCF5A = new device_PLC_F5A(ProgWgt,vecDataFlow[0],&vecFlgQueueWr[0]);
+    //...
+
+    //инициализация БД
+    objDBC = new DBControl(DataFlowToDB,DataFlowFromDB,sDBSem);
+    //..
+
+    //инициализация правил
     objRule = new RuleControl(plainTextEdit);
+
+    //инициализация графика
+    objQPlot = new QPlot(PlotWgt);
 }
 
 bool Core::OpenCreateDBFromSerialNumber(QString serialNumber)

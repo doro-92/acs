@@ -2039,6 +2039,9 @@ public:
   virtual void update(UpdatePhase phase);
   virtual QList<QCPLayoutElement*> elements(bool recursive) const;
 
+  virtual void zoomEvent(double scalex, double scaley, QPoint pos);
+
+
 protected:
   // property members:
   QBrush mBackgroundBrush;

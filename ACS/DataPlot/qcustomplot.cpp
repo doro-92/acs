@@ -12596,6 +12596,21 @@ void QCPAxisRect::wheelEvent(QWheelEvent *event)
   }
 }
 
+void QCPAxisRect::zoomEvent(double scalex, double scaley, QPoint pos)
+{
+  if (mRangeZoomHorzAxis.data())
+  {
+    mRangeDragHorzAxis.data()->moveRange(mRangeZoomHorzAxis.data()->pixelToCoord(pos.x()) - mRangeZoomHorzAxis.data()->pixelToCoord(this->center().x())); //Сдвиг позиции масштабирования в центр
+    mRangeZoomHorzAxis.data()->scaleRange(scalex, mRangeZoomHorzAxis.data()->pixelToCoord(this->center().x())); //Масштабирование относительно центра
+  }
+  if (mRangeZoomVertAxis.data())
+  {
+    mRangeZoomVertAxis.data()->moveRange(mRangeZoomHorzAxis.data()->pixelToCoord(pos.y()) - mRangeZoomHorzAxis.data()->pixelToCoord(this->center().y()));
+    mRangeZoomVertAxis.data()->scaleRange(scaley, mRangeZoomVertAxis.data()->pixelToCoord(this->center().y()));
+  }
+  mParentPlot->replot();
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////// QCPAbstractLegendItem

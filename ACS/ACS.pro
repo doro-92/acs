@@ -29,8 +29,8 @@ SOURCES += main.cpp\
     DBControl/dbcontrol.cpp \
     DBControl/threadqueue.cpp \
     DBControl/threadblobtodb.cpp \
-    DataPlot/dataplot.cpp \
     DataPlot/qcustomplot.cpp \
+    DataPlot/qplot.cpp \
     Device/device_plc_f5a.cpp \
     RuleControl/RuleControl.cpp \
     RuleControl/ThParse.cpp \
@@ -42,8 +42,7 @@ SOURCES += main.cpp\
     RuleControl/RunTimeTranslator.cpp
 
 HEADERS  += mainwindow.h \
-        ui_mainwindow.h \
-    DataPlot/dataplot.h \
+    DataPlot/qplot.h \
     DataPlot/qcustomplot.h \
     DBControl/dbcontrol.h \
     DBControl/common.h \

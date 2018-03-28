@@ -1,89 +1,67 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QTimer>
-
-#include "Core/Core.h"
-
-
-QPoint startPoint;
-
-qint32 id = 1;
-QString s_time = "0";
-QTimer *timer;
-QTimer *timer2;
-qint32 TimeDataInc;
-
-Core *oCore;
-
-
-
-typedef struct XY
-{
-   QVector<double> X;
-   QVector<double> Y;
-}XY;
-
-QVector <XY> *vecPlots;
-
-
-QVector <qint32> id_plot;
-qint32 id_plot_cnt=0;
-QVector <QString> time_plot;
 
 //test
-quint32 testTimeDataInc=0;
-
-
-
-
+qint32 testTimeDataInc;
 
 
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent),
   ui(new Ui::MainWindow)
 {
+    ui->setupUi(this);
 
-    id_plot.push_back(1);
-    id_plot.push_back(2);
-    id_plot.push_back(3);
-    id_plot.push_back(4);
-    id_plot.push_back(5); //magic ;)
-
-
-    time_plot.push_back("0");
-    time_plot.push_back("0");
-    time_plot.push_back("0");
-    time_plot.push_back("0");
-    time_plot.push_back("0");//magic ;)
-
-
-    XY sXY;
-
-    vecPlots=new QVector <XY>;
-
-    vecPlots->push_back(sXY);
-    vecPlots->push_back(sXY);
-    vecPlots->push_back(sXY);
-    vecPlots->push_back(sXY);
-    vecPlots->push_back(sXY);
-    vecPlots->push_back(sXY);
-
-    //qDebug()<<id_plot;
-    //qDebug()<<time_plot;
-    //qDebug()<<vecPlots;
-
-    InitTimer();
-    //InitPlot();
-
-
+    //test
     srand(QDateTime::currentDateTime().toTime_t());
 
+//    id_plot.push_back(1);
+//    id_plot.push_back(2);
+//    id_plot.push_back(3);
+//    id_plot.push_back(4);
+//    id_plot.push_back(5); //magic ;)
+
+
+//    time_plot.push_back("0");
+//    time_plot.push_back("0");
+//    time_plot.push_back("0");
+//    time_plot.push_back("0");
+//    time_plot.push_back("0");//magic ;)
+
+
+//    XY sXY;
+
+//    vecPlots=new QVector <XY>;
+
+//    vecPlots->push_back(sXY);
+//    vecPlots->push_back(sXY);
+//    vecPlots->push_back(sXY);
+//    vecPlots->push_back(sXY);
+//    vecPlots->push_back(sXY);
+//    vecPlots->push_back(sXY);
+
+//    //qDebug()<<id_plot;
+//    //qDebug()<<time_plot;
+//    //qDebug()<<vecPlots;
+
+
+    //InitPlot();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::InitCore()
+{
+
+    timer2 = new QTimer();
+    timer2->start(2);
+    connect (timer2, SIGNAL(timeout()), this, SLOT(TestTimerTick()));
+
+    oCore=new Core(1,ui->ProgTab, ui->PlotTab, ui->plainTextEdit);
+}
+
 
 Qt::CheckState CSFromBool(bool flg)
 {
@@ -162,28 +140,90 @@ void MainWindow::TestTimerTick()
     }
 }
 
-void MainWindow::InitCore()
+//////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////// Test functions //////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
+
+//радом вектор для внутренних тестов
+void MainWindow::on_pushButton_clicked()
 {
+        QTime midnight(0,0,0);
+        qsrand(midnight.secsTo(QTime::currentTime()));
+        //ui->textEdit->append("test rnd 1="+QString::number((qrand() % 100)));
+        //ui->textEdit->append("test rnd 2="+QString::number((qrand() % 100)));
 
-    timer2 = new QTimer();
-    timer2->start(2);
-    connect (timer2, SIGNAL(timeout()), this, SLOT(TestTimerTick()));
 
-    oCore=new Core(1,ui->tab_2,ui->plainTextEdit);
+        QVector <structDataFlow> vecDataFlow;
+
+        structDataFlow strtDF;
+
+       for (int i=0;i<ui->lineEdit_2->text().toInt();i++)
+       {
+           strtDF.data=QString::number((qrand() % 100));
+           strtDF.numDevice=1;
+           strtDF.numParam=1;
+           strtDF.time=QString::number(testTimeDataInc++);
+
+           vecDataFlow.push_back(strtDF);
+       }
+
+    oCore->TestSetDataFlow(&vecDataFlow);
 }
 
 
+//занимает очередь 1
+void MainWindow::on_pushButton_2_clicked()
+{
+    oCore->TestSetFlgDataFlow(0,!oCore->GetFlgDataFlow(0));
+}
 
+//занимает очередь 2
+void MainWindow::on_pushButton_3_clicked()
+{
+    oCore->TestSetFlgDataFlow(1,!oCore->GetFlgDataFlow(1));
+}
+
+//запуск и приостановка потока
+void MainWindow::on_pushButton_7_clicked()
+{
+    oCore->TestControlDBThread();
+}
+
+//последняя ошибка БД
+void MainWindow::on_pushButton_8_clicked()
+{
+  QMessageBox::critical(NULL,"Ошибка",oCore->TestGetLastErrorDB());
+}
+
+//создает или открывает БД
+void MainWindow::on_pushButton_5_clicked()
+{
+    oCore->OpenCreateDBFromSerialNumber(ui->lineEdit->text());
+}
+
+//закрывает БД
+void MainWindow::on_pushButton_4_clicked()
+{
+    oCore->CloseDB();
+}
+
+//запуск теста
+void MainWindow::on_pushButton_9_clicked()
+{
+    if (!oCore->StartTest())
+        QMessageBox::critical(NULL,"Ошибка",oCore->TestGetLastErrorDB());
+}
+
+// вызывает парсинг кода
+void MainWindow::on_pushButton_6_clicked()
+{
+    oCore->Parse(ui->plainTextEdit_2);
+}
+
+//////////////////////////////////////////////////////////////////////////
+/*
 //!!!!/////////////////////// TODO: DEL /////////////////////!!!!//
-void MainWindow::InitTimer()
-{
-    TimeDataInc=0;
-    timer = new QTimer();
-    timer->start(1);
-    connect (timer, SIGNAL(timeout()), this, SLOT(timerTick()));
 
-
-}
 
 void MainWindow::InitPlot()
 {
@@ -251,43 +291,43 @@ void MainWindow::InitPlot()
     cl.push_back(Qt::green);
     cl.push_back(Qt::magenta);
     cl.push_back(Qt::black);
-/*
-    for (quint32 i=0;i<CurrentSessionConfig->size();i++)
-    {
-    ui->customPlot->addGraph();
-    QString str=qu->CurrentSessionConfig->operator [](i).param_name+","+
-            qu->CurrentSessionConfig->operator [](i).unit;
-    ui->customPlot->graph()->setName(str);
-    QPen graphPen;
-    graphPen.setColor(cl[i]);
-    graphPen.setWidthF(rand()/(double)RAND_MAX*2+1);
-    ui->customPlot->graph(i)->setPen(graphPen);
-    }
 
-    str=qu->CurrentSessionConfig->operator [](1).param_name+","+
-                qu->CurrentSessionConfig->operator [](1).unit;
-    ui->customPlot->addGraph();
-    ui->customPlot->graph()->setName(str);
-    graphPen.setColor(Qt::blue);
-    graphPen.setWidthF(rand()/(double)RAND_MAX*2+1);
-    ui->customPlot->graph(1)->setPen(graphPen);
+//    for (quint32 i=0;i<CurrentSessionConfig->size();i++)
+//    {
+//    ui->customPlot->addGraph();
+//    QString str=qu->CurrentSessionConfig->operator [](i).param_name+","+
+//            qu->CurrentSessionConfig->operator [](i).unit;
+//    ui->customPlot->graph()->setName(str);
+//    QPen graphPen;
+//    graphPen.setColor(cl[i]);
+//    graphPen.setWidthF(rand()/(double)RAND_MAX*2+1);
+//    ui->customPlot->graph(i)->setPen(graphPen);
+//    }
 
-    str=qu->CurrentSessionConfig->operator [](2).param_name+","+
-                qu->CurrentSessionConfig->operator [](2).unit;
-    ui->customPlot->addGraph();
-    ui->customPlot->graph()->setName(str);
-    graphPen.setColor(Qt::green);
-    graphPen.setWidthF(rand()/(double)RAND_MAX*2+1);
-    ui->customPlot->graph(2)->setPen(graphPen);
+//    str=qu->CurrentSessionConfig->operator [](1).param_name+","+
+//                qu->CurrentSessionConfig->operator [](1).unit;
+//    ui->customPlot->addGraph();
+//    ui->customPlot->graph()->setName(str);
+//    graphPen.setColor(Qt::blue);
+//    graphPen.setWidthF(rand()/(double)RAND_MAX*2+1);
+//    ui->customPlot->graph(1)->setPen(graphPen);
 
-    str=qu->CurrentSessionConfig->operator [](3).param_name+","+
-                qu->CurrentSessionConfig->operator [](3).unit;
-    ui->customPlot->addGraph();
-    ui->customPlot->graph()->setName(str);
-    graphPen.setColor(Qt::black);
-    graphPen.setWidthF(rand()/(double)RAND_MAX*2+1);
-    ui->customPlot->graph(3)->setPen(graphPen);
-*/
+//    str=qu->CurrentSessionConfig->operator [](2).param_name+","+
+//                qu->CurrentSessionConfig->operator [](2).unit;
+//    ui->customPlot->addGraph();
+//    ui->customPlot->graph()->setName(str);
+//    graphPen.setColor(Qt::green);
+//    graphPen.setWidthF(rand()/(double)RAND_MAX*2+1);
+//    ui->customPlot->graph(2)->setPen(graphPen);
+
+//    str=qu->CurrentSessionConfig->operator [](3).param_name+","+
+//                qu->CurrentSessionConfig->operator [](3).unit;
+//    ui->customPlot->addGraph();
+//    ui->customPlot->graph()->setName(str);
+//    graphPen.setColor(Qt::black);
+//    graphPen.setWidthF(rand()/(double)RAND_MAX*2+1);
+//    ui->customPlot->graph(3)->setPen(graphPen);
+
 
 }
 
@@ -377,18 +417,18 @@ void MainWindow::legendDoubleClick(QCPLegend *legend, QCPAbstractLegendItem *ite
 
 void MainWindow::selectionChanged()
 {
-    /*
-     *    normally, axis base line, axis tick labels and axis labels are selectable separately, but we want
-     *    the user only to be able to select the axis as a whole, so we tie the selected states of the tick labels
-     *    and the axis base line together. However, the axis label shall be selectable individually.
-     *
-     *    The selection state of the left and right axes shall be synchronized as well as the state of the
-     *    bottom and top axes.
-     *
-     *    Further, we want to synchronize the selection of the graphs with the selection state of the respective
-     *    legend item belonging to that graph. So the user can select a graph by either clicking on the graph itself
-     *    or on its legend item.
-  */
+
+//     *    normally, axis base line, axis tick labels and axis labels are selectable separately, but we want
+//     *    the user only to be able to select the axis as a whole, so we tie the selected states of the tick labels
+//     *    and the axis base line together. However, the axis label shall be selectable individually.
+//     *
+//     *    The selection state of the left and right axes shall be synchronized as well as the state of the
+//     *    bottom and top axes.
+//     *
+//     *    Further, we want to synchronize the selection of the graphs with the selection state of the respective
+//     *    legend item belonging to that graph. So the user can select a graph by either clicking on the graph itself
+//     *    or on its legend item.
+
 
     // make top and bottom axes be selected synchronously, and handle axis and tick labels as one selectable object:
     if (ui->customPlot->xAxis->selectedParts().testFlag(QCPAxis::spAxis) ||
@@ -465,19 +505,19 @@ void MainWindow::mouseWheel()
 
 void MainWindow::addGraph()
 {
-    /*
-    ui->customPlot->removeGraph(0);
-    ui->customPlot->addGraph();
-    ui->customPlot->graph()->setName(QString("График %1").arg(ui->customPlot->graphCount()-1));
-    ui->customPlot->graph()->setData(X, Y);
-    ui->customPlot->xAxis->setRange(X[0], X[X.size() - 1]);
-    ui->customPlot->graph()->setLineStyle((QCPGraph::LineStyle)1);
-    ui->customPlot->graph()->setScatterStyle(QCPScatterStyle((QCPScatterStyle::ScatterShape)1));
-    QPen graphPen;
-    graphPen.setColor(Qt::red);
-    graphPen.setWidthF(rand()/(double)RAND_MAX*2+1);
-    ui->customPlot->graph()->setPen(graphPen);
-    ui->customPlot->replot();*/
+
+//    ui->customPlot->removeGraph(0);
+//    ui->customPlot->addGraph();
+//    ui->customPlot->graph()->setName(QString("График %1").arg(ui->customPlot->graphCount()-1));
+//    ui->customPlot->graph()->setData(X, Y);
+//    ui->customPlot->xAxis->setRange(X[0], X[X.size() - 1]);
+//    ui->customPlot->graph()->setLineStyle((QCPGraph::LineStyle)1);
+//    ui->customPlot->graph()->setScatterStyle(QCPScatterStyle((QCPScatterStyle::ScatterShape)1));
+//    QPen graphPen;
+//    graphPen.setColor(Qt::red);
+//    graphPen.setWidthF(rand()/(double)RAND_MAX*2+1);
+//    ui->customPlot->graph()->setPen(graphPen);
+//    ui->customPlot->replot();
 }
 
 void MainWindow::DrawMultiGraph(quint32 id)
@@ -493,25 +533,25 @@ void MainWindow::DrawMultiGraph(quint32 id)
 
     ui->customPlot->replot();
 }
-/*
-void MainWindow::addRandomGraph()
-{
-    int n = 50; // number of points in graph
-    QVector <structNewDataFlow> vectr;
-    structNewDataFlow curr_data;
 
-    for (int i=0; i<n; i++)
-    {
-        if (i == 25)
-            curr_data.time = "0";
-        else
-            curr_data.time = (((i + 1) / 2) * 2);
-        curr_data.data = rand()%110;
-        vectr.push_back(curr_data);
-    }
-    addGraph(vectr);
-}
-*/
+//void MainWindow::addRandomGraph()
+//{
+//    int n = 50; // number of points in graph
+//    QVector <structNewDataFlow> vectr;
+//    structNewDataFlow curr_data;
+
+//    for (int i=0; i<n; i++)
+//    {
+//        if (i == 25)
+//            curr_data.time = "0";
+//        else
+//            curr_data.time = (((i + 1) / 2) * 2);
+//        curr_data.data = rand()%110;
+//        vectr.push_back(curr_data);
+//    }
+//    addGraph(vectr);
+//}
+
 
 void MainWindow::contextMenuRequest(QPoint pos)
 {
@@ -557,87 +597,4 @@ void MainWindow::graphClicked(QCPAbstractPlottable *plottable)
 {
     ui->statusBar->showMessage(QString("Clicked on graph '%1'.").arg(plottable->name()), 1000);
 }
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////// Test functions //////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////
-
-//радом вектор для внутренних тестов
-void MainWindow::on_pushButton_clicked()
-{
-        QTime midnight(0,0,0);
-        qsrand(midnight.secsTo(QTime::currentTime()));
-        //ui->textEdit->append("test rnd 1="+QString::number((qrand() % 100)));
-        //ui->textEdit->append("test rnd 2="+QString::number((qrand() % 100)));
-
-
-        QVector <structDataFlow> vecDataFlow;
-
-        structDataFlow strtDF;
-
-       for (int i=0;i<ui->lineEdit_2->text().toInt();i++)
-       {
-           strtDF.data=QString::number((qrand() % 100));
-           strtDF.numDevice=1;
-           strtDF.numParam=1;
-           strtDF.time=QString::number(testTimeDataInc++);
-
-           vecDataFlow.push_back(strtDF);
-       }
-
-    oCore->TestSetDataFlow(&vecDataFlow);
-}
-
-
-//занимает очередь 1
-void MainWindow::on_pushButton_2_clicked()
-{
-    oCore->TestSetFlgDataFlow(0,!oCore->GetFlgDataFlow(0));
-}
-
-//занимает очередь 2
-void MainWindow::on_pushButton_3_clicked()
-{
-    oCore->TestSetFlgDataFlow(1,!oCore->GetFlgDataFlow(1));
-}
-
-//запуск и приостановка потока
-void MainWindow::on_pushButton_7_clicked()
-{
-    oCore->TestControlDBThread();
-}
-
-//последняя ошибка БД
-void MainWindow::on_pushButton_8_clicked()
-{
-  QMessageBox::critical(NULL,"Ошибка",oCore->TestGetLastErrorDB());
-}
-
-//создает или открывает БД
-void MainWindow::on_pushButton_5_clicked()
-{
-    oCore->OpenCreateDBFromSerialNumber(ui->lineEdit->text());
-}
-
-//закрывает БД
-void MainWindow::on_pushButton_4_clicked()
-{
-    oCore->CloseDB();
-}
-
-//запуск теста
-void MainWindow::on_pushButton_9_clicked()
-{
-    if (!oCore->StartTest())
-        QMessageBox::critical(NULL,"Ошибка",oCore->TestGetLastErrorDB());
-}
-
-// вызывает парсинг кода
-void MainWindow::on_pushButton_6_clicked()
-{
-    oCore->Parse(ui->plainTextEdit_2);
-}
-
-//////////////////////////////////////////////////////////////////////////
+*/

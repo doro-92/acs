@@ -11,6 +11,7 @@
 #include "DBControl/dbcontrol.h"
 #include "Device/device_plc_f5a.h"
 #include "RuleControl/RuleControl.h"
+#include "DataPlot/qplot.h"
 
 //класс связи и управления всем
 class Core: public QObject
@@ -46,13 +47,14 @@ private:
     //основная БД
     DBControl *objDBC;
 
-    //график
-
     //правила
     RuleControl *objRule;
 
+    //график
+    QPlot *objQPlot;
+
 public:
-    Core(const quint32 &numDFqueue, QWidget *pwgt, QPlainTextEdit *plainTextEdit);
+    Core(const quint32 &numDFqueue, QWidget *ProgWgt, QWidget *PlotWgt, QPlainTextEdit *plainTextEdit);
 
     void Parse(QPlainTextEdit *plainTextEdit2)
     {

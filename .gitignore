@@ -1,0 +1,4 @@
+Debug/
+Release/
+ACS/*.user*
+ACS/*.pro.user

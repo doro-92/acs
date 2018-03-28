@@ -11,8 +11,8 @@
 
 device_PLC_F5A::device_PLC_F5A (QWidget* pwgt,
                                 QQueue<structDataFlow> *p_queue_to_db_in,
-                                bool *flgWriteToQu
-                                /*, bool *glob_flag*/) : QWidget(pwgt), next_block_size(0)
+                                bool *flgWriteToQu): QWidget(pwgt), next_block_size(0)
+                                /*, bool *glob_flag*/
 {
     this->setStyleSheet("background-color: #f1f1f1;"                    //настройка стиля отображениявиджетов
                         "QTextEdit {background-color: #ffffff;}");
