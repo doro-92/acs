@@ -386,7 +386,10 @@ void QPlot::moveLegend()
 void QPlot::graphClicked(QCPAbstractPlottable *plottable)
 {
 //    ui->statusBar->showMessage(QString("Clicked on graph '%1'.").arg(plottable->name()), 1000);
-    ReDrawPlots(cPlot->axisRect()->graphs().indexOf(plottable->parentPlot()->selectedGraphs().at(0)));
+    QList <QCPGraph *> idx=plottable->parentPlot()->selectedGraphs();
+
+    if (idx.isEmpty()) return;
+    ReDrawPlots(cPlot->axisRect()->graphs().indexOf(idx.at(0));
 }
 
 void QPlot::ShowSeparate()
